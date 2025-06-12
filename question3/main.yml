@@ -1,0 +1,24 @@
+---
+
+- name: Monitor Disk Usage
+  hosts: webservers, databases
+  remote_user: ansibleuser
+    #become: yes
+  vars_files:
+    - vars.yml 
+  tasks:
+
+    - name: Check disk Usage
+      #shell: df -h --output=source,pcent --direct {{ disk_partition }} | tail -n 1 | tr -s ' ' | cut -d ' ' -f2 | rev | cut -c2- | rev
+      shell: df -h {{ disk_partition }} | awk 'NR==2 {print $5}' | tr -d '%'
+      register: disk_used
+
+    - name: "Debug disk usage"
+      debug:
+        msg: "Disk usage on partition {{ disk_partition }} is {{ disk_used.stdout }}%"
+
+
+    - name: Fail if Disk usage exceeds threshold
+      fail:
+        msg: "Disk usage on {{ disk_partition }} is {{ disk_used.stdout }}%, which exceeds the threshold of {{ disk_usage_threshold }}%"
+      when: disk_used.stdout|int > disk_usage_threshold

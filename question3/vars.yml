@@ -1,0 +1,4 @@
+---
+disk_partition: "/"
+disk_usage_threshold: 80
+
