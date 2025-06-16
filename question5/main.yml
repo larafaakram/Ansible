@@ -1,0 +1,23 @@
+---
+- name: Install httpd
+  hosts: all
+  gather_facts: yes
+  tasks:
+  - name: Install the httpd package
+    yum:
+      name: httpd
+      state: present
+ 
+  - name: Start and enable httpd
+    service:
+      name: httpd
+      state: started
+      enabled: true
+
+  - name: Populate service facts
+    ansible.builtin.service_facts:
+
+  - name: Debug HTTPD service state
+    debug:
+      msg: "Httpd service is in {{ ansible_facts['services']['httpd.service']['state'] }} state."
+        #var: ansible_facts['services']['httpd.service']['state']

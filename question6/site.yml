@@ -1,0 +1,5 @@
+---
+- name: Configure webserver
+  hosts: webservers
+  roles:
+    - ../roles/webserver

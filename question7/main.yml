@@ -1,0 +1,37 @@
+---
+
+
+- name: Install packages
+  hosts: webservers
+
+  tasks:
+    - name: Install httpd in RedHat distribution
+      yum:
+        name: httpd
+        state: present
+      when: ansible_facts['distribution'] == 'RedHat'
+
+    - name: Display
+      debug:
+        var: ansible_facts['distribution']
+
+    - name: Install nginx in Debian distribution
+      dnf:
+        name: nginx
+        state: present
+      when: ansible_facts['distribution'] == 'Debian'
+
+    - name: Install packages in Redhat
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop: ['vim','curl','git']
+      when: ansible_facts['distribution'] == 'RedHat'
+
+    - name: Install packages in Debian
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop: ['vim','curl','git']
+      when: ansible_facts['distribution'] == 'Debian'
+

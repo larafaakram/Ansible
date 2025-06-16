@@ -1,0 +1,21 @@
+---
+# tasks file for webserver
+- name: Install httpd service
+  yum:
+    name: httpd
+    state: present
+
+- name: Enable service httpd
+  service:
+    name: httpd
+    state: started
+    enabled: true
+
+- name: Copy file to th server
+  copy:
+    src: index.html
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart httpd
