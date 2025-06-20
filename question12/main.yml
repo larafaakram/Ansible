@@ -1,0 +1,49 @@
+---
+
+- name: Monitor Resources RAM, CPU, DISK
+  hosts: webservers
+  vars_files:
+    - vars.yml
+
+
+  tasks:
+    - name: Monitor CPU Usage
+      shell: top -bn1 | grep %Cpu | awk '{print 100 - $8}'
+      register: cpu_usage
+
+    - name: current CPU Usage
+      debug:
+        msg: "Current CPU Usage is {{ cpu_usage.stdout }}%."
+
+    - name: Fail if CPU usage exceeds threshold
+      fail:
+        msg: "CPU usage is {{ cpu_usage.stdout }}%, which exceeds the threshold of {{ cpu_threshold }}%"
+      when: cpu_usage.stdout|int > cpu_threshold
+
+
+    - name: Monitor RAM Usage
+      shell: free | grep Mem | awk '{print $3/$2 * 100.0}' | cut -d'.' -f1
+      register: memory_usage
+
+    - name: current Memory Usage
+      debug:
+        msg: "Current Memory Usage is {{ memory_usage.stdout }}%."
+
+    - name: Display Memory Usage
+      fail:
+        msg: "Memory usage is {{ memory_usage.stdout }}%, which exceeds the threshold of {{ memory_threshold }}%"
+      when: memory_usage.stdout|int > memory_threshold 
+
+
+    - name: Monitor Disk Usage
+      shell: df -h / | awk 'NR==2 {print $5}' | tr -d %
+      register: disk_usage
+
+    - name: current disk Usage
+      debug:
+        msg: "Current Disk Usage is {{ disk_usage.stdout }}%."
+
+    - name: Display disk usage
+      fail:
+        msg: "Disk usage on {{ disk_partition }} is {{ disk_usage.stdout }}%, which exceeds the threshold of {{ disk_usage_threshold }}%"
+      when: disk_usage.stdout|int > disk_usage_threshold

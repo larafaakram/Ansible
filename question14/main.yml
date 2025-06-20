@@ -1,0 +1,38 @@
+---
+
+- name: Backup and restore the /etc Directory
+  hosts: webservers
+  vars:
+    backup_src: /var/www/html/
+    backup_dest: /Backup/ngix_web_server.tar.gz
+    backup_restore: /restored
+
+
+  tasks:
+    - name: Create a directory /Backup if does not exist
+      file:
+        path: "{{ backup_dest | dirname }}"
+        state: directory
+        mode: '0755'
+      tags: backup
+
+    - name: Backup the directory /etc dans /backup
+      archive:
+        path: "{{ backup_src }}"
+        dest: "{{ backup_dest }}"
+        format: gz
+      tags: backup
+
+    - name: Create a directory restored_etc if does not exist
+      file:
+        path: "{{ backup_restore }}"
+        state: directory
+        mode: '0755'
+      tags: restore
+
+    - name: restore files from Backup directory
+      unarchive:
+        src: "{{ backup_dest }}"
+        dest: "{{ backup_restore }}"
+        remote_src: yes
+      tags: restore

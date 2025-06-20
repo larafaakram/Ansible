@@ -1,0 +1,34 @@
+---
+
+- name: Deploy and Test a web server
+  hosts: webservers
+  tasks:
+
+    - name: Install nginx service
+      yum:
+        name: nginx
+        state: present
+
+    - name: start nginx service
+      service:
+        name: "{{ 'nginx' if ansible_facts['os_family'] == 'RedHat' else 'httpd' }}"
+        state: started
+        enabled: true
+
+    - name: Permanently enable https service, also enable it immediately if possible
+      ansible.posix.firewalld:
+        service: http
+        state: enabled
+        permanent: true
+        immediate: true
+        offline: true
+
+    - name: Check that you can connect (GET) to a page and it returns a status 200
+      ansible.builtin.uri:
+        url: http://{{ ansible_default_ipv4.address }}
+        return_content: yes
+      register: web_content
+   
+    - name: Display verification result
+      debug:
+        msg: "Web Server Content: {{ web_content.content }}" 

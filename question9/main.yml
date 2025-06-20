@@ -1,0 +1,51 @@
+---
+
+- name: Disable root Access in proxy nodes
+  hosts: proxy
+
+  tasks:
+    - name: Disable ssh root login
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^PermitRootLogin"
+        line: "PermitRootLogin no"
+        state: present
+        backup: yes
+      notify: Restart ssh
+
+    - name: Disable Password authentication
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^PasswordAuthentication"
+        line: "PasswordAuthentication yes"
+        state: present
+        backup: yes
+      notify: Restart ssh
+
+    - name: Set authorized key taken from file
+      authorized_key:
+        user: ansibleuser
+        state: present
+        key: "{{ lookup('file', '/home/ansibleuser/.ssh/ansibleuser.pub') }}"
+
+    - name: Create ansibleuser if not present
+      user:
+        name: ansibleuser
+        state: present
+        shell: /bin/bash
+
+    - name: Restrict Access in SSH Server
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        line: "AllowUsers ansibleuser"
+        state: present
+        backup: yes      
+      notify: Restart ssh
+
+
+  handlers:
+    - name: Restart ssh
+      service:
+        name: sshd
+        state: restarted
+

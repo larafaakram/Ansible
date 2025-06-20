@@ -1,0 +1,31 @@
+---
+
+- name: Create Directory for backup
+  hosts: all
+
+  tasks:
+
+    - name: create directory
+      file:
+        state: directory
+        path: /data/backups
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Copy configuration file
+      copy:
+        src: files/myconfig.cfg
+        dest: /etc/config.cfg
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Verfiy permission of file
+      command: ls -l /etc/config.cfg
+      register: file_check
+
+    - name: Display file details
+      debug:
+        msg: "{{ file_check.stdout }}"
+

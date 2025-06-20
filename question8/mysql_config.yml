@@ -1,0 +1,35 @@
+---
+
+- name: Configure a Mysql Server
+  hosts: databases
+
+  tasks:
+
+    - name: Add MySQL YUM repository
+      shell: |
+        sudo dnf install -y https://dev.mysql.com/get/mysql84-community-release-el9-1.noarch.rpm
+        sudo dnf install -y mysql-community-server mysql-community-devel
+
+    - name: Install python3-PyMySQL
+      dnf:
+        name: python3-PyMySQL
+        state: present
+
+    - name: Install Mysql package 8.4
+      yum:
+        name: mysql-community-server
+        state: present
+
+    - name: Start and enable MySQL service
+      service:
+        name: mysqld
+        state: started
+        enabled: yes
+
+    - name: Check version of Mysql
+      command: "mysql --version"
+      register: mysql_version
+
+    - name: Display version
+      debug:
+        msg: "Mysql Version is: {{ mysql_version.stdout }}"

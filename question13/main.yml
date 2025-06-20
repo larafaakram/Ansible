@@ -1,0 +1,74 @@
+---
+
+- name: Configure a centralized logging 
+  hosts: all
+
+  tasks:
+    - name: Install and Rsyslog
+      yum:
+        name: rsyslog
+        state: present
+
+    - name: Start and enable Rsyslog
+      service:
+        name: rsyslog
+        state: started
+        enabled: yes
+
+    - name: Configure rsyslog service
+      lineinfile:
+        path: /etc/rsyslog.conf
+        regexp: "^#module(load=imudp)"
+        line: "module(load=imudp)"
+        state: present
+      when: inventory_hostname == 'localhost'
+
+    - name: Configure port for rsyslog
+      lineinfile:
+        path: /etc/rsyslog.conf
+        regexp: '^#input(type="imudp"'
+        line: 'input(type="imudp" port="514")'
+        state: present
+      when: inventory_hostname == 'localhost'
+
+    - name: Restart rsyslog
+      service:
+        name: rsyslog
+        state: restarted
+
+    - name: Create log archive directory in the controller
+      file:
+        path: /var/log/archives
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      when: inventory_hostname == 'localhost'
+
+
+    - name: configure rsyslog in managed node
+      lineinfile:
+        path: /etc/rsyslog.conf
+        line: "*.* @controller.training.com:514"
+        state: present
+      when: inventory_hostname != 'localhost'
+
+    - name: Restart rsyslog
+      service:
+        name: rsyslog
+        state: restarted
+
+    - name: Open port 514 in firewall
+      firewalld:
+        port: 514/udp
+        permanent: true
+        state: enabled
+      when: inventory_hostname != 'localhost'
+
+    - name: Archive logs from managed nodes
+      fetch:
+        src: /var/log/messages
+        dest: /var/log/archives/{{ inventory_hostname }}-messages.log
+        flat: yes
+
+
