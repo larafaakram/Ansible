@@ -1,0 +1,16 @@
+--2025-06-20 19:24:04--  https://access.cdn.redhat.com/content/origin/files/sha256/2b/2b3793f0a414e7efc1eedb908a8120bc49bf5824cdf3a03708d2a55a1e6be91c/ansible-automation-platform-setup-bundle-2.5-14.1-x86_64.tar.gz?user=aabd595a713a5f8e64ee28805d9c5aa1
+Résolution de access.cdn.redhat.com (access.cdn.redhat.com)… 92.123.48.224, 92.123.48.227, 2001:41a8:44:4::5dba:86bb, ...
+Connexion à access.cdn.redhat.com (access.cdn.redhat.com)|92.123.48.224|:443… connecté.
+requête HTTP transmise, en attente de la réponse… 302 Moved Temporarily
+Emplacement : https://access.redhat.com/downloads/content/error?code=403&uri=/content/origin/files/sha256/2b/2b3793f0a414e7efc1eedb908a8120bc49bf5824cdf3a03708d2a55a1e6be91c/ansible-automation-platform-setup-bundle-2.5-14.1-x86_64.tar.gz&client=41.230.184.124&edge=92.123.48.220&timestamp=1750443844 [suivant]
+--2025-06-20 19:24:04--  https://access.redhat.com/downloads/content/error?code=403&uri=/content/origin/files/sha256/2b/2b3793f0a414e7efc1eedb908a8120bc49bf5824cdf3a03708d2a55a1e6be91c/ansible-automation-platform-setup-bundle-2.5-14.1-x86_64.tar.gz&client=41.230.184.124&edge=92.123.48.220&timestamp=1750443844
+Résolution de access.redhat.com (access.redhat.com)… 79.140.80.73, 92.122.225.81, 2001:41a8:47:301::5f65:23c8, ...
+Connexion à access.redhat.com (access.redhat.com)|79.140.80.73|:443… connecté.
+requête HTTP transmise, en attente de la réponse… 200 OK
+Taille : non indiqué [text/html]
+Sauvegarde en : « ansible-automation-platform-setup-bundle-2.5-14.1-x86_64.tar.gz?user=aabd595a713a5f8e64ee28805d9c5aa1 »
+
+                  ansible-automatio     [<=>                                                               ]       0  --.-KB/s               ansible-automation-platform-setup-b     [ <=>                                                              ]  65,33K  --.-KB/s    ds 0,09s   
+
+2025-06-20 19:24:05 (748 KB/s) - « ansible-automation-platform-setup-bundle-2.5-14.1-x86_64.tar.gz?user=aabd595a713a5f8e64ee28805d9c5aa1 » sauvegardé [66899]
+
