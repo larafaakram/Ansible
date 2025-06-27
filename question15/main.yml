@@ -1,2 +1,7 @@
 ---
-- name: Add project
+- name: Display text
+  hosts: localhost
+
+  tasks:
+    - name: Display text on lacal
+      command: echo "Hello World"
