@@ -1,6 +1,6 @@
 ---
 - name: Display text
-  hosts: localhost
+  hosts: webservers
 
   tasks:
     - name: Display text on lacal
