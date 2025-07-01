@@ -1,0 +1,9 @@
+---
+
+- name: Test dynamic inventory
+  hosts: webservers
+
+  tasks:
+    - name: Ping webservers hosts
+      ping:
+      

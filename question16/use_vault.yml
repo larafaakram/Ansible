@@ -1,0 +1,17 @@
+---
+- name: Display sensitive vars
+  hosts: localhost
+
+  vars_files:
+    - secure_vars.yml
+
+  tasks:
+
+    - name: Display the database password
+      debug:
+        msg: "The database password is {{ db_password }}."
+
+    - name: Display the Api Key
+      debug:
+        msg: "The Api Key is {{ api_key }}."
+

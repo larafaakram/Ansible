@@ -1,0 +1,24 @@
+---
+
+- name: Check FW and httpd in webservers
+  hosts: webservers
+  become: true
+
+  tasks:
+    - name: check service firewalld is-started
+      service:
+        name: firewalld
+        state: started
+        enabled: true
+
+    - name: Install httpd
+      yum:
+        - name: httpd
+          state: present
+
+    - name: check httpd is started and is-enabled
+      service:
+        name: httpd
+        state: started
+        enabled: true
+
