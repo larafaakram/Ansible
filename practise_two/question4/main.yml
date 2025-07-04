@@ -1,0 +1,31 @@
+---
+- name: Add user Deployer
+  hosts: webservers
+  become: yes
+
+  vars:
+    password: "$6$tTlw2jI/8n5YYgIv$uU4M691.SIk7pdPCOhn1kUGTZUFghP1zCxwhDf1cK4sxDHDRidkMOIoT.s3eIo1BltEVHiYWxG9pd7nLLqRw61"
+
+  tasks:
+    - name: Create group
+      group:
+        name: developers
+        state: present
+
+
+    - name: Create user
+      user:
+        name: deployer
+        password: "{{ password }}"
+        groups: wheel,developers
+        state: present
+
+
+    - name: Configure passwordless sudo for deployer
+      copy:
+        dest: /etc/sudoers.d/deployer
+        content: |
+          deployer  ALL=(ALL)   NOPASSWD:ALL
+        owner: root
+        group: root
+        mode: '0440'

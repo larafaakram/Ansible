@@ -1,0 +1,54 @@
+---
+- name: Install NGINX Server
+  hosts: webservers
+  become: yes
+
+  tasks:
+    - name: Install nginx package
+      yum:
+        name: nginx
+        state: present
+
+    - name: Add index.html
+      copy:
+        dest: /usr/share/nginx/html/index.html
+        content: |
+          <html>
+          <head>
+            <title>Welcome to Node1</title>
+          </head>
+          <body>
+            <h1>This is a static website hosted on Node1</h1>
+          </body>
+          </html>
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Start and Enable NGINX Service
+      service:
+        name: nginx
+        enabled: yes
+        state: started
+
+    - name: Configure firewalld
+      firewalld:
+        service: http
+        state: enabled
+        permanent: true
+        immediate: true
+      notify: Reload firewalld
+
+    - name: Check that a page returns successfully but fail if the word AWESOME is not in the page contents
+      ansible.builtin.uri:
+        url: http://node1.training.com
+        return_content: true
+      register: this
+      failed_when: "'Welcome' not in this.content"
+      delegate_to: localhost
+
+  handlers:
+    - name: Reload Firewalld
+      service:
+        name: firewalld
+        state: reloaded

@@ -1,0 +1,14 @@
+---
+- name: Add job to contab
+  hosts: localhost
+
+  tasks:
+    - name: Add a cron job for security updates
+      cron:
+        name: "weekly security update"
+        minute: "0"
+        hour: "3"
+        day: "*"
+        month: "*"
+        weekday: "0"
+        job: "ansible-playbook /home/ansibleuser/practise_tests/practise_two/question3/update_security.yml"

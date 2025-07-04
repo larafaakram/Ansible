@@ -1,0 +1,53 @@
+---
+- name: Security Pratique
+  hosts: webservers
+  become: true
+
+  tasks:
+    - name: Disable password-based authentification
+      lineinfile:
+        regexp: '^#PasswordAuthentication'
+        path: /etc/ssh/sshd_config
+        line: 'PasswordAuthentication no'
+
+    - name: Deny Root login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#PermitRootLogin'
+        line: 'PermitRootLogin no' 
+
+    - name: Set idle session timeout to 10 minutes
+      lineinfile:
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        path: /etc/ssh/sshd_config
+      loop:
+        - line: "ClientAliveInterval 600"
+          regexp: ^#ClientAliveInterval
+        - line: "ClientAliveCountMax 1"
+          regexp: ^#ClientAliveCountMax
+
+    - name: Create a banner
+      copy:
+        dest: /etc/issue.net
+        content: |
+          ***************************************************
+          * Authorized Access Only. Unauthorized use is      *
+          * strictly prohibited and will be prosecuted.      *
+          ***************************************************
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Add banner to ssh
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^#?Banner"
+        line: Banner /etc/issue.net
+      notify: Restart SSH
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: sshd
+        state: reloaded 

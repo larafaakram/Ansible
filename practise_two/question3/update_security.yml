@@ -1,0 +1,12 @@
+---
+- name: Automate Security Update
+  hosts: webservers
+  become: yes
+
+  tasks:
+    - name: Install security update
+      yum:
+        name: '*'
+        security: yes
+        state: latest
+
