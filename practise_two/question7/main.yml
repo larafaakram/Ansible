@@ -1,0 +1,23 @@
+---
+- name: Backup Configuration
+  hosts: webservers
+  become: yes
+
+  tasks:
+    - name: Create directory Backup
+      file:
+        name: /Backups
+        owner: ansibleuser
+        group: ansibleuser
+        mode: '0755'
+        state: directory
+
+    - name: Create Backup configuration
+      archive:
+        path: /var/log
+        dest: /Backups/system-logs.zip
+        owner: ansibleuser
+        group: ansibleuser
+        format: zip
+
+

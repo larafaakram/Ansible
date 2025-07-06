@@ -1,0 +1,9 @@
+---
+- name: Architecture Multi-Tiers
+  hosts: webservers
+  become: yes
+
+  roles:
+    - database
+    - backend
+    - frontend

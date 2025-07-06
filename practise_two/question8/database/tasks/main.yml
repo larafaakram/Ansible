@@ -1,0 +1,31 @@
+---
+# tasks file for database
+- name: Install and configure DATABASE
+  
+  tasks:
+    - name: Install packages Mariadb
+      yum:
+        name: mariadb
+        state: present
+
+    - name: start and enable Service
+      service: 
+        name: mariadb
+        enabled: yes
+        state: started
+
+    - name: Create a new database with name 'webapp'
+      community.mysql.mysql_db:
+        name: {{ db_name }} 
+        state: present
+        login_unix_socket: /run/mysqld/mysqld.sock
+
+    - name: Create user with password, all database privileges and 'WITH GRANT OPTION' in webapp
+      community.mysql.mysql_user:
+        state: present
+        name: {{ db_user }}
+        password: {{ db_user_pw }}
+        priv:
+          'webapp.*': 'ALL,GRANT'
+
+

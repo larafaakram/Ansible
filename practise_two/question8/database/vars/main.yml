@@ -1,0 +1,5 @@
+---
+# vars file for database
+db_name: webapp
+db_user: webuser
+db_user_pw: passw0rd
